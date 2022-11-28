@@ -1,0 +1,21 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    plugins {
+        id 'com.android.application' version '7.1.0-alpha09'
+        id 'com.android.library' version '7.1.0-alpha09'
+        id 'com.google.android.libraries.mapsplatform.secrets-gradle-plugin' version '2.0.1'
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+rootProject.name = "Localização do Usuário"
+include ':app'
