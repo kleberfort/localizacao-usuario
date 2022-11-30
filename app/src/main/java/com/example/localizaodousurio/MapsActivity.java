@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,6 +24,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.example.localizaodousurio.databinding.ActivityMapsBinding;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -77,12 +83,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onLocationChanged(@NonNull Location location) {
 
+                Double latitude = location.getLatitude();
+                Double longitude = location.getLongitude();
+
                 mMap.clear(); //Limpa o mapa antes de criar os marcadores
-                LatLng meuLocal = new LatLng(location.getLatitude(),location.getLongitude());
+                LatLng meuLocal = new LatLng(latitude,longitude);
                 mMap.addMarker(new MarkerOptions().position(meuLocal).title("Meu local"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 19));
 
                 Log.d("Localização", "onLocationChanged: " + location.toString());
+
+
+                //Reverse Geocoding > que é o processo de transformar latitude/longitude em um endereço
+                Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+                try {
+                    List<Address> listaEndereco = geocoder.getFromLocation(latitude, longitude, 1);
+
+                    if(listaEndereco != null && listaEndereco.size() > 0){
+                        Address endereco = listaEndereco.get(0);
+                        Log.d("local", "onLocationChanged: " + endereco.toString());
+                        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
 
             }
         };
