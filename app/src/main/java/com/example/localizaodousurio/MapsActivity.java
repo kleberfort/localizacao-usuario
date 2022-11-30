@@ -86,10 +86,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Double latitude = location.getLatitude();
                 Double longitude = location.getLongitude();
 
+                /*
                 mMap.clear(); //Limpa o mapa antes de criar os marcadores
                 LatLng meuLocal = new LatLng(latitude,longitude);
                 mMap.addMarker(new MarkerOptions().position(meuLocal).title("Meu local"));
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(meuLocal, 19));
+                */
 
                 Log.d("Localização", "onLocationChanged: " + location.toString());
 
@@ -98,15 +100,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
 
                 try {
-                    List<Address> listaEndereco = geocoder.getFromLocation(latitude, longitude, 1);
+                    //List<Address> listaEndereco = geocoder.getFromLocation(latitude, longitude, 1);
+
+                    //Utilizando o Objeto Geocoding que transforma um endereço ou descrição de um local em latitude e longitude
+                    //utilo o método getFromLocationName que recebe como parâmetro este endereço, abaixo do bloco try/catch podemos colocar um
+                    //marcador para inserir no mapa
+                    String stringEndereco  = "R. Lizete Vanderlei, 103, Itaitinga - CE";
+                    List<Address> listaEndereco = geocoder.getFromLocationName(stringEndereco, 1);
 
                     if(listaEndereco != null && listaEndereco.size() > 0){
                         Address endereco = listaEndereco.get(0);
-                        Log.d("local", "onLocationChanged: " + endereco.toString());
+                        Log.d("local", "onLocationChanged: " + endereco.getAddressLine(0));
+
+                        Double lat = endereco.getLatitude();
+                        Double lon = endereco.getLongitude();
+
+                        mMap.clear(); //Limpa o mapa antes de criar os marcadores
+                        LatLng local = new LatLng(lat,lon);
+                        mMap.addMarker(new MarkerOptions().position(local).title("Meu local"));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(local, 19));
+
+
+
                         }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
+
 
 
             }
